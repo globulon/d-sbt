@@ -5,7 +5,7 @@ import sbt.Keys._
 
 object DSbt extends Plugin {
 
-  val Config = config("d-sbt") extend(Runtime)
+  val Config = config("d-sbt") extend(Compile)
 
   val distDirectory = SettingKey[File](
     "dist-directory", "name of directory containing distribution"
@@ -24,21 +24,22 @@ object DSbt extends Plugin {
   )
 
   val buildDist = InputKey[Unit]("build-dist", "")
-
   val distSettings: Seq[sbt.Project.Setting[_]] =  Seq(
-    distDirectory  <<= baseDirectory(_ / "dist"),
-    libsDirectory <<= baseDirectory(_ / "dist" / "lib") ,
+    distDirectory  := new File("dist"),
+    libsDirectory := new File( "dist") / "lib" ,
     transferDirectories := Seq.empty,
     transferFilesInto := Seq.empty,
     buildDist <<= createDistribution
   )
 
   private def createDistribution = inputTask { (argTask: TaskKey[Seq[String]]) =>
-    (argTask, update, DSbt.libsDirectory, DSbt.transferDirectories, DSbt.transferFilesInto) map  {
-      (argTask, upd, libs, dirCopies, fileCopies) =>
+    (argTask, update, DSbt.libsDirectory, DSbt.transferDirectories, DSbt.transferFilesInto, artifactPath in Compile in packageBin) map  {
+      (argTask, upd, libs, dirCopies, fileCopies, artifactFile) =>
+        println("copying %s" format(artifactFile))
         copyDependencies(upd, libs)
         copyBulkDirectories(dirCopies)
         copySingleFiles(fileCopies)
+        IO.copyFile(artifactFile, libs / artifactFile.getName)
     }
   }
 

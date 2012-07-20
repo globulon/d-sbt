@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 
 object Properties {
-  lazy val scalaVer = "2.9.1"
+  lazy val scalaVer = "2.9.2"
 }
 
 object Resolvers {
@@ -14,6 +14,7 @@ object BuildSettings {
   import Properties._
   lazy val buildSettings = Defaults.defaultSettings ++ Seq (
     organization        := "com.promindis",
+    crossScalaVersions  := Seq("2.9.1", "2.9.2"),
     sbtPlugin           := true,
     version             := "0.1-SNAPSHOT",
     scalaVersion        := scalaVer,
