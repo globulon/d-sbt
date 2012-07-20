@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 
 object Properties {
-  lazy val scalaVer = "2.9.2"
+  lazy val scalaVer = "2.9.1"
 }
 
 object Resolvers {
@@ -32,9 +32,6 @@ object ApplicationBuild extends Build {
     "d-sbt",
     file("."),
     settings =  buildSettings ++
-      Seq(resolvers ++= Seq(typesafeReleases, scalaToolsRepo)) //++ Seq(libraryDependencies ++= (Seq() ++ testDependencies))
+      Seq(resolvers ++= Seq(typesafeReleases, scalaToolsRepo))
   )
-
-
-
 }
